@@ -29,19 +29,21 @@ io.on('connection', function(socket) {
         console.log('client has disconnected');
     });
 
-    socket.on('createMessage', function(message) {
+    socket.on('createMessage', function(message, callback) {
         console.log('createMessage', message);
 
-        // io.emit('newMessage', {
-        //     from: message.from,
-        //     text: message.text,
-        //     created_at: new Date().getTime()
-        // });
-        socket.broadcast.emit('newMessage', {
+        io.emit('newMessage', {
             from: message.from,
             text: message.text,
             created_at: new Date().getTime()
         });
+
+        callback();
+        // socket.broadcast.emit('newMessage', {
+        //     from: message.from,
+        //     text: message.text,
+        //     created_at: new Date().getTime()
+        // });
 
     });
 });
