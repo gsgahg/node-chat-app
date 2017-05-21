@@ -11,19 +11,26 @@ const io = socketIO(server);
 
 app.use(express.static(publicPath));
 
+const log = [];
+
 io.on('connection', function(socket) {
     console.log('new user connected');
+    //
+    // socket.emit('newMessage', {
+    //     from: 'Admin',
+    //     text: 'Welcome to the chat app.',
+    // });
 
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to the chat app.',
-    });
+    for (var i = 0; i < log.length; i++) {
+        socket.emit('newMessage', log[i])
+    }
 
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'New user joined',
-        created_at: new Date().getTime()
-    });
+
+    // socket.broadcast.emit('newMessage', {
+    //     from: 'Admin',
+    //     text: 'New user joined',
+    //     created_at: new Date().getTime()
+    // });
 
     socket.on('disconnect', function() {
         console.log('client has disconnected');
@@ -37,6 +44,16 @@ io.on('connection', function(socket) {
             text: message.text,
             created_at: new Date().getTime()
         });
+
+        log.push({
+            from: message.from,
+            text: message.text,
+            created_at: new Date().getTime()
+        });
+
+        if (log.length > 50) {
+            log.splice(0, 1);
+        }
 
         callback();
         // socket.broadcast.emit('newMessage', {
