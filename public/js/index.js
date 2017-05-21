@@ -23,7 +23,7 @@ jQuery('#message-form').on('submit', function(e) {
         from: 'anon',
         text: jQuery('[name=message]').val()
     }, function() {
-        console.log('got it');
+        jQuery('[name=message]').val('');
     })
 });
 
